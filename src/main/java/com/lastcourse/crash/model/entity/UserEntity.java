@@ -8,17 +8,20 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Objects;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-@Table(name = "\"user\"")
+@Table(
+    name = "\"user\"",
+    indexes = {@Index(name = "user_username_idx", columnList = "username")
+})
 public class UserEntity implements UserDetails {
 
   @Id
