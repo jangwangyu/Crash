@@ -20,7 +20,12 @@ public class JwtService {
   private final SecretKey key;
 
   public JwtService(@Value("${jwt.secret-key}") String key) {
-    this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
+    try {
+      this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
+    } catch (Exception e) {
+      logger.error("Failed to initialize JwtService: {}", e.getMessage());
+      throw e; // 예외를 다시 던져서 빈 생성이 실패하도록 함
+    }
   }
 
   public String generateAccessToken(UserDetails userDetails) { // 사용자 인증을 통해 인증이 완료된 유저의 username을 subject로 대입해서 토큰을 만들고 generateAccessToken에 제공하는 함수

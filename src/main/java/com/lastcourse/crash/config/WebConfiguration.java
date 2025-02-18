@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -40,7 +41,11 @@ public class WebConfiguration {
 
     http.cors(Customizer.withDefaults())
         .authorizeHttpRequests(
-            (requests) -> requests.anyRequest().permitAll()) // 모든 request 허용
+            (requests) -> requests
+                .requestMatchers(HttpMethod.POST, "/api/*/users", "/api/*/users/authenticate") // POST로 받는 회원가입과 로그인으로 사용되는 url만
+                .permitAll() // 인증 없이 허용
+                .anyRequest()
+                .authenticated())
         .sessionManagement(
             (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 서버가 세션을 저장하지 않도록 지정
         )
