@@ -13,8 +13,10 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.ZonedDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
@@ -114,8 +116,18 @@ public class UserEntity implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return null;
-  }
+    if(this.role.equals(Role.ADMIN)) {
+      return List.of(
+          new SimpleGrantedAuthority("ROLE_" + Role.ADMIN.name()), // hasRole에도 적용을 시키려면 "ROLE_"처럼 PreFix가 붙어야함
+          new SimpleGrantedAuthority(Role.ADMIN.name()), // hasAuthority 권한 부여
+          new SimpleGrantedAuthority("ROLE_" + Role.USER.name()),
+          new SimpleGrantedAuthority(Role.USER.name()));
+    }else {
+      return List.of(
+          new SimpleGrantedAuthority("ROLE_" + Role.USER.name()),
+          new SimpleGrantedAuthority(Role.USER.name()));
+    }
+  } // 해당 유저의 부여되어 있는 권한의 목록을 리턴함
 
   @Override
   public String getPassword() {
