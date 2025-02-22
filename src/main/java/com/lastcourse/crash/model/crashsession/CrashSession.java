@@ -4,7 +4,7 @@ import com.lastcourse.crash.model.entity.CrashSessionEntity;
 import com.lastcourse.crash.model.sessionspeaker.SessionSpeaker;
 import java.time.ZonedDateTime;
 
-public record CrashSession (
+public record CrashSession(
     Long sessionId,
     String title,
     String body,

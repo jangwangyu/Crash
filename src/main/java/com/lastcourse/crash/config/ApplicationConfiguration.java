@@ -1,6 +1,5 @@
 package com.lastcourse.crash.config;
 
-import com.lastcourse.crash.model.crashsession.CrashSession;
 import com.lastcourse.crash.model.crashsession.CrashSessionCategory;
 import com.lastcourse.crash.model.crashsession.CrashSessionPostRequestBody;
 import com.lastcourse.crash.model.sessionspeaker.SessionSpeaker;

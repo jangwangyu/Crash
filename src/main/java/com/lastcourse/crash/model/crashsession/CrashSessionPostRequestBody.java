@@ -1,6 +1,5 @@
 package com.lastcourse.crash.model.crashsession;
 
-import com.lastcourse.crash.model.sessionspeaker.SessionSpeaker;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.ZonedDateTime;

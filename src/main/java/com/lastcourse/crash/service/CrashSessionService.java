@@ -5,14 +5,11 @@ import com.lastcourse.crash.model.crashsession.CrashSession;
 import com.lastcourse.crash.model.crashsession.CrashSessionPatchRequestBody;
 import com.lastcourse.crash.model.crashsession.CrashSessionPostRequestBody;
 import com.lastcourse.crash.model.entity.CrashSessionEntity;
-import com.lastcourse.crash.model.entity.SessionSpeakerEntity;
 import com.lastcourse.crash.repository.CrashSessionEntityRepository;
-import com.lastcourse.crash.repository.SessionSpeakerEntityRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class CrashSessionService {

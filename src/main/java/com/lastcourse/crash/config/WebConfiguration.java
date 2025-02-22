@@ -45,9 +45,17 @@ public class WebConfiguration {
             (requests) -> requests
                 .requestMatchers(HttpMethod.POST, "/api/*/users", "/api/*/users/authenticate") // POST로 받는 회원가입과 로그인으로 사용되는 url만
                 .permitAll() // 인증 없이 허용
-                .requestMatchers(HttpMethod.GET, "/api/*/session-speakers", "/api/*/session-speakers/*")
+                .requestMatchers(HttpMethod.GET,
+                    "/api/*/session-speakers",
+                    "/api/*/session-speakers/**," ,
+                    "/api/*/crash-sessions" ,
+                    "/api/*/crash-sessions/**")
                 .permitAll()
-                .requestMatchers("/api/*/session-speakers", "/api/*/session-speakers/**") // HttpMethod가 없으면 전부 GET,POST,PATCH,DELETE 가능
+                .requestMatchers(
+                    "/api/*/session-speakers",
+                    "/api/*/session-speakers/**",
+                    "api/*/crash-session",
+                    "api/*/crash-session/**") // HttpMethod가 없으면 전부 GET,POST,PATCH,DELETE 가능
                 .hasAuthority(Role.ADMIN.name())
                 .anyRequest()
                 .authenticated())
