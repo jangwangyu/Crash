@@ -21,6 +21,8 @@ public class RegistrationService {
 
   @Autowired
   private CrashSessionService crashSessionService;
+  @Autowired
+  private SlackService slackService;
 
   public List<Registration> getRegistrationsByCurrentUser(UserEntity currentUser) {
     var registrationEntities = registrationEntityRepository.findByUser(currentUser);
@@ -55,8 +57,13 @@ public class RegistrationService {
                   registrationEntity.getRegistrationId(), currentUser
               );
             });
+
     var registrationEntity = RegistrationEntity.of(currentUser, crashSessionEntity);
-    return Registration.from(registrationEntityRepository.save(registrationEntity));
+    var registration =  Registration.from(registrationEntityRepository.save(registrationEntity));
+
+    slackService.sendSlackNotification(registration);
+
+    return registration;
   }
 
   public void deleteRegistrationByRegistrationIdByCurrentUser(Long registrationId,
