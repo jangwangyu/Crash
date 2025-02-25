@@ -18,3 +18,7 @@ spring:
 
 jwt:
   secret-key: MzJfYnl0ZV9iYXNlNjRfZW5jb2RlZF9zZWNyZXRfa2V5
+
+redis:
+  host: localhost
+  port: 6379

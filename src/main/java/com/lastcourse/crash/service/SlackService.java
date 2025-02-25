@@ -33,7 +33,7 @@ public class SlackService {
 
     var response = restClient
         .post()
-        .uri("")
+        .uri("https://hooks.slack.com/services/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")
         .body(slackNotificationMessage) // 리퀘스트 바디
         .retrieve()
         .body(String.class); // 리스폰스 바디

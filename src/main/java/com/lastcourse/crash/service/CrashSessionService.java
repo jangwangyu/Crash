@@ -5,6 +5,7 @@ import com.lastcourse.crash.model.crashsession.CrashSession;
 import com.lastcourse.crash.model.crashsession.CrashSessionPatchRequestBody;
 import com.lastcourse.crash.model.crashsession.CrashSessionPostRequestBody;
 import com.lastcourse.crash.model.entity.CrashSessionEntity;
+import com.lastcourse.crash.repository.CrashSessionCacheRepository;
 import com.lastcourse.crash.repository.CrashSessionEntityRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,30 @@ public class CrashSessionService {
   @Autowired
   private SessionSpeakerService sessionSpeakerService;
 
+  @Autowired
+  private CrashSessionCacheRepository crashSessionCacheRepository;
+
   public List<CrashSession> getCrashSessions() {
-    return crashSessionEntityRepository.findAll().stream().map(CrashSession::from).toList();
+    var crashSessions = crashSessionCacheRepository.getCrashSessionsListCache();
+    if(!ObjectUtils.isEmpty(crashSessions)) {
+      return crashSessions;
+    }else {
+      var crashSessionsList =  crashSessionEntityRepository.findAll().stream().map(CrashSession::from).toList(); // 비어있다면 데이터베이스 조회
+      crashSessionCacheRepository.setCrashSessionsListCache(crashSessionsList); // 캐시 세팅
+      return crashSessionsList;
+    }
   }
 
   public CrashSession getCrashSessionBySessionId(Long sessionId) { // 단건 아이디 조회
-    var crashSessionEntity = getCrashSessionEntityBySessionId(sessionId);
-    return CrashSession.from(crashSessionEntity);
+    return crashSessionCacheRepository
+        .getCrashSessionCache(sessionId)
+        .orElseGet(() -> { // 캐시가 없으면 아래 로직 동작
+          var crashSessionEntity = getCrashSessionEntityBySessionId(sessionId);
+          var crashSession = CrashSession.from(crashSessionEntity);
+          crashSessionCacheRepository.setCrashSessionCache(crashSession);
+          return crashSession;
+        });
+
   }
 
   public CrashSession createCrashSession(
@@ -53,31 +71,31 @@ public class CrashSessionService {
       Long sessionId, CrashSessionPatchRequestBody crashSessionPatchRequestBody) {
     var crashSessionEntity = getCrashSessionEntityBySessionId(sessionId);
 
-    if(!ObjectUtils.isEmpty(crashSessionPatchRequestBody.title())){
+    if (!ObjectUtils.isEmpty(crashSessionPatchRequestBody.title())) {
       crashSessionEntity.setTitle(
           crashSessionPatchRequestBody.title()
       );
     }
 
-    if(!ObjectUtils.isEmpty(crashSessionPatchRequestBody.body())){
+    if (!ObjectUtils.isEmpty(crashSessionPatchRequestBody.body())) {
       crashSessionEntity.setBody(
           crashSessionPatchRequestBody.body()
       );
     }
 
-    if(!ObjectUtils.isEmpty(crashSessionPatchRequestBody.category())){
+    if (!ObjectUtils.isEmpty(crashSessionPatchRequestBody.category())) {
       crashSessionEntity.setCategory(
           crashSessionPatchRequestBody.category()
       );
     }
 
-    if(!ObjectUtils.isEmpty(crashSessionPatchRequestBody.dateTime())){
+    if (!ObjectUtils.isEmpty(crashSessionPatchRequestBody.dateTime())) {
       crashSessionEntity.setDateTime(
           crashSessionPatchRequestBody.dateTime()
       );
     }
 
-    if(!ObjectUtils.isEmpty(crashSessionPatchRequestBody.speakerId())){
+    if (!ObjectUtils.isEmpty(crashSessionPatchRequestBody.speakerId())) {
       var sessionSpeakerEntity = sessionSpeakerService.getSessionSpeakerEntityBySpeakerId(
           crashSessionPatchRequestBody.speakerId()
       );
